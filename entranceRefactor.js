@@ -6,6 +6,7 @@ $(() => {
     const $greenLight = $('#green-light');
     const $activateButton = $('#activate');
 
+
     // Hold class names in constants
     const colorRed = 'red';
     const colorYellow = 'yellow';
@@ -50,55 +51,76 @@ $(() => {
     };
 
 
+
     /* FUNCTION DEFINITION BEGIN */
 
     const clickEvent = () => {
-        let timer;
+        let timerGreenGreen, timerGreenRed;
         // Once activate is clicked give a feeling of resetting lights
-        setTimeout(activateLights, 300);
-        setTimeout(deactivateLights, 700);
-        setTimeout(activateLights, 1100);
-        setTimeout(deactivateLights, 1500);
+        const startLights = () => {
+            setTimeout(activateLights, 300);
+            setTimeout(deactivateLights, 700);
+            setTimeout(activateLights, 1100);
+            setTimeout(deactivateLights, 1500);
         // Turn on the red light once resetting stops
-        setTimeout(() => {addColor($redLight, colorRed)}, 2000);
+            setTimeout(() => {addColor($redLight, colorRed)}, 2000);
+        }
+        startLights();
+        // Don't start timerGreen until resetting finishes
+        // LOGIC FOR RED LIGHT
+        // It will self execute itself until deActive button is clicked
+        const trafficFlow = (() => {
 
-        // Don't start timer until resetting finishes
-        setTimeout(() => {
-            timer = 10;
 
-            let lightCounter = setInterval(() => {
-                timer--;
-                $('#red-counter').empty().append(timer);
-                if (timer == 0) {
-                    $('#green-counter').empty().append("Go!");
-                }
-                if (timer == -1) {
-                    removeColor($redLight, colorRed);
-                    $('#red-counter').empty();
-                    clearInterval(lightCounter);
+            setTimeout(() => {
+                timerRed = 10;
 
-                }
-            }, 1000);
-        }, 2200);
+                let lightCounter = setInterval(() => {
+                    timerRed--;
+                    $('#red-counter').empty().append(timerRed);
+                    if (timerRed == 1) {
+                        addColor($yellowLight, colorYellow);
+                    }
+                    if (timerRed == 0) {
 
-        // Red light amount = 10 * 1000 + 2200 = 12200
-        setTimeout(() => {
-            timer = 5;
 
-            let lightCounter = setInterval(() => {
-                timer--;
-                $('#green-counter').empty().append(timer);
-                if (timer == 0) {
-                    $('#red-counter').empty().append("Stop!");
-                }
-                if (timer == -1) {
-                    removeColor($greenLight, colorGreen);
-                    $('#red-lightCounter').empty();
-                    clearInterval(lightCounter);
-                }
-            // Call per second
-            }, 1000);
-        }, 12200);
+
+                    }
+                    if (timerRed == -1) {
+                        $('#green-counter').empty().append("Go!");
+                        removeColor($redLight, colorRed);
+                        addColor($greenLight, colorGreen);
+                        $('#red-counter').empty();
+                        clearInterval(lightCounter);
+
+                    }
+                }, 1000);
+            }, 2200);
+
+            // LOGIC FOR GREEN LIGHT
+            // Red light amount = 10 * 1000 + 2200 = 12200
+            setTimeout(() => {
+                timerGreen = 5;
+
+                let lightCounter = setInterval(() => {
+                    timerGreen--;
+                    $('#green-counter').empty().append(timerGreen);
+                    removeColor($yellowLight, colorYellow);
+                    if (timerGreen == 0) {
+                        $('#red-counter').empty().append("Stop!");
+                        addColor($redLight, colorRed);
+                    }
+                    if (timerGreen == -1) {
+                        removeColor($greenLight, colorGreen);
+                        addColor($redLight, colorRed);
+                        $('#green-counter').empty();
+                        clearInterval(lightCounter);
+                    }
+                // Call per second
+                }, 1000);
+            }, 13400);
+            //setTimeout(() => {addColor($greenLight, colorGreen)}, 18400);
+        })();
 
     };
 
