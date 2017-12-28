@@ -49,17 +49,11 @@ $(() => {
         }
     };
 
-    // Globab timer to track light's counter
-    // let timer;
-    // const lightCounter = ($idSelector) => {
-    //     // If it's red light delay higher
-    //     timer = $idSelector === $("red-light") ? 10 : 5;
-    //
-    // };
 
+    /* FUNCTION DEFINITION BEGIN */
 
-
-    $activateButton.click(() => {
+    const clickEvent = () => {
+        let timer;
         // Once activate is clicked give a feeling of resetting lights
         setTimeout(activateLights, 300);
         setTimeout(deactivateLights, 700);
@@ -75,10 +69,10 @@ $(() => {
             let lightCounter = setInterval(() => {
                 timer--;
                 $('#red-counter').empty().append(timer);
-                if (timer === 1) {
-                    $('#green-counter').append("Go!");
+                if (timer == 0) {
+                    $('#green-counter').empty().append("Go!");
                 }
-                if (timer === -1) {
+                if (timer == -1) {
                     removeColor($redLight, colorRed);
                     $('#red-counter').empty();
                     clearInterval(lightCounter);
@@ -87,27 +81,32 @@ $(() => {
             }, 1000);
         }, 2200);
 
-        // Red light amount = 10 * 1 + 2.2 = 12.2 + 100 for delay on purpose
+        // Red light amount = 10 * 1000 + 2200 = 12200
         setTimeout(() => {
-            timer = 10;
+            timer = 5;
 
             let lightCounter = setInterval(() => {
                 timer--;
-                $('#red-counter').empty().append(timer);
-                if (timer == -1) {
-                    removeColor($redLight, colorRed);
-                    $('#red-counter').empty();
-                    clearInterval(lightCounter);
-
+                $('#green-counter').empty().append(timer);
+                if (timer == 0) {
+                    $('#red-counter').empty().append("Stop!");
                 }
+                if (timer == -1) {
+                    removeColor($greenLight, colorGreen);
+                    $('#red-lightCounter').empty();
+                    clearInterval(lightCounter);
+                }
+            // Call per second
             }, 1000);
-        }, 12300);
+        }, 12200);
+
+    };
+
+    /* FUNCTION DEFINITION END */
 
 
-        /*setTimeout(() => {
-
-        }, 10000);*/
-    });
+    // Once the button is clicked call clickEvent()
+    $activateButton.click(() => clickEvent());
 
     // Switch on or off manually by clicking on light
     $redLight.click(() => {
