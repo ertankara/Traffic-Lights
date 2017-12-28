@@ -52,13 +52,37 @@ $(() => {
 
 
     $activateButton.click(() => {
+        let timer;
         // Once activate is clicked give a feeling of resetting lights
         setTimeout(activateLights, 300);
         setTimeout(deactivateLights, 700);
         setTimeout(activateLights, 1100);
         setTimeout(deactivateLights, 1500);
-
+        // Turn on the red light once resetting stops
         setTimeout(() => {addColor($redLight, colorRed)}, 2000);
+
+        // Don't start timer until resetting finishes
+        setTimeout(() => {
+            timer = 10;
+
+            let lightCounter = setInterval(() => {
+                timer--;
+                $('#red-counter')
+                    .empty().append(timer);
+                if (timer == -1) {
+                    removeColor($redLight, colorRed);
+                    $('#red-counter').empty();
+                    clearInterval(lightCounter);
+
+                }
+            }, 1000);
+        }, 2200);
+
+
+
+        /*setTimeout(() => {
+
+        }, 10000);*/
     });
 
     // Switch on or off manually by clicking on light
