@@ -49,10 +49,17 @@ $(() => {
         }
     };
 
+    // Globab timer to track light's counter
+    // let timer;
+    // const lightCounter = ($idSelector) => {
+    //     // If it's red light delay higher
+    //     timer = $idSelector === $("red-light") ? 10 : 5;
+    //
+    // };
+
 
 
     $activateButton.click(() => {
-        let timer;
         // Once activate is clicked give a feeling of resetting lights
         setTimeout(activateLights, 300);
         setTimeout(deactivateLights, 700);
@@ -67,9 +74,11 @@ $(() => {
 
             let lightCounter = setInterval(() => {
                 timer--;
-                $('#red-counter')
-                    .empty().append(timer);
-                if (timer == -1) {
+                $('#red-counter').empty().append(timer);
+                if (timer === 1) {
+                    $('#green-counter').append("Go!");
+                }
+                if (timer === -1) {
                     removeColor($redLight, colorRed);
                     $('#red-counter').empty();
                     clearInterval(lightCounter);
@@ -78,6 +87,21 @@ $(() => {
             }, 1000);
         }, 2200);
 
+        // Red light amount = 10 * 1 + 2.2 = 12.2 + 100 for delay on purpose
+        setTimeout(() => {
+            timer = 10;
+
+            let lightCounter = setInterval(() => {
+                timer--;
+                $('#red-counter').empty().append(timer);
+                if (timer == -1) {
+                    removeColor($redLight, colorRed);
+                    $('#red-counter').empty();
+                    clearInterval(lightCounter);
+
+                }
+            }, 1000);
+        }, 12300);
 
 
         /*setTimeout(() => {
