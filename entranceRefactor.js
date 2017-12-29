@@ -51,21 +51,28 @@ $(() => {
     };
 
 
+    const asyncFuncs = (funcArray, timeout) => {
+        for (let i = 0; i < funcArray.length; i++, timeout += 400) {
+            setTimeout(funcArray[i], timeout);
+        }
+    }
+
+
 
     /* FUNCTION DEFINITION BEGIN */
 
     const clickEvent = () => {
         let timerGreenGreen, timerGreenRed;
         // Once activate is clicked give a feeling of resetting lights
-        const startLights = () => {
-            setTimeout(activateLights, 300);
-            setTimeout(deactivateLights, 700);
-            setTimeout(activateLights, 1100);
-            setTimeout(deactivateLights, 1500);
-        // Turn on the red light once resetting stops
-            setTimeout(() => {addColor($redLight, colorRed)}, 2000);
-        }
-        startLights();
+        asyncFuncs([activateLights, deactivateLights], 400);
+        setTimeout(() => {
+            asyncFuncs([activateLights, deactivateLights], 400);
+        }, 800);
+
+        setTimeout(() => {addColor($redLight, colorRed)}, 2000);
+
+
+        
         // Don't start timerGreen until resetting finishes
         // LOGIC FOR RED LIGHT
         // It will self execute itself until deActive button is clicked
@@ -81,11 +88,7 @@ $(() => {
                     if (timerRed == 1) {
                         addColor($yellowLight, colorYellow);
                     }
-                    if (timerRed == 0) {
 
-
-
-                    }
                     if (timerRed == -1) {
                         $('#green-counter').empty().append("Go!");
                         removeColor($redLight, colorRed);
@@ -128,9 +131,16 @@ $(() => {
 
 
     // Once the button is clicked call clickEvent()
-    $activateButton.click(() => clickEvent());
+    $activateButton.click(() => {
+      clickEvent();
+      // Then clear div for new use
+      setTimeout(() => {
+        $('#red-counter').empty();
+        removeColor($redLight, colorRed);
+      }, 21000);
+    });
 
-    // Switch on or off manually by clicking on light
+    // Switch on manually by clicking on light
     $redLight.click(() => {
         addColor($redLight, colorRed);
         // Switch off other colors
@@ -138,7 +148,7 @@ $(() => {
         removeColor($greenLight, colorGreen);
     });
 
-    // Switch on or off manually by clicking on light
+    // Switch on manually by clicking on light
     $yellowLight.click(() => {
         addColor($yellowLight, colorYellow);
         // Switch off other colors
@@ -146,7 +156,7 @@ $(() => {
         removeColor($greenLight, colorGreen);
     });
 
-    // Switch on or off manually by clicking on light
+    // Switch off manually by clicking on light
     $greenLight.click(() => {
         addColor($greenLight, colorGreen);
         // Switch off other colors
