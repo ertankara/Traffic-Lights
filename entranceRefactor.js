@@ -51,32 +51,37 @@ $(() => {
     };
 
 
-    const asyncFuncs = (funcArray, timeout) => {
-        for (let i = 0; i < funcArray.length; i++, timeout += 400) {
+    const asyncFuncs = (funcArray, timeout, timeoutDiff=0) => {
+
+        for (let i = 0; i < funcArray.length; i++, timeout += timeoutDiff) {
             setTimeout(funcArray[i], timeout);
         }
     }
 
+    const mainAsync = (funcArray, timeout, intervalRepeatTimes, timeoutDiff=0, intervalTime=0) => {
+        // If interval time is not set then set it with this logic
+        // This will make sure that interval won't end, until inner timeouts are done running
+        if (intervalTime === 0) {
+            intervalTime = timeout + (funcArray.length - 1) * timeoutDiff;
+        }
+        const interval = setInterval(() => {
+            console.log("Hi");
+            --intervalRepeatTimes;
+            if (intervalRepeatTimes === 0)
+                clearInterval(interval);
+            asyncFuncs(funcArray, timeout, timeoutDiff);
+        }, intervalTime);
+    }
 
 
     /* FUNCTION DEFINITION BEGIN */
 
     const clickEvent = () => {
-        let timerGreenGreen, timerGreenRed;
-        // Once activate is clicked give a feeling of resetting lights
-        asyncFuncs([activateLights, deactivateLights], 400);
-        setTimeout(() => {
-            asyncFuncs([activateLights, deactivateLights], 400);
-        }, 800);
-
-        setTimeout(() => {addColor($redLight, colorRed)}, 2000);
+        mainAsync([activateLights, deactivateLights], 400, 2, 400);
+        //setTimeout(() => {addColor($redLight, colorRed)}, 1800);
+        /*const trafficFlow = (() => {
 
 
-        
-        // Don't start timerGreen until resetting finishes
-        // LOGIC FOR RED LIGHT
-        // It will self execute itself until deActive button is clicked
-        const trafficFlow = (() => {
 
 
             setTimeout(() => {
@@ -123,7 +128,7 @@ $(() => {
                 }, 1000);
             }, 13400);
             //setTimeout(() => {addColor($greenLight, colorGreen)}, 18400);
-        })();
+        })();*/
 
     };
 
@@ -138,29 +143,5 @@ $(() => {
         $('#red-counter').empty();
         removeColor($redLight, colorRed);
       }, 21000);
-    });
-
-    // Switch on manually by clicking on light
-    $redLight.click(() => {
-        addColor($redLight, colorRed);
-        // Switch off other colors
-        removeColor($yellowLight, colorYellow);
-        removeColor($greenLight, colorGreen);
-    });
-
-    // Switch on manually by clicking on light
-    $yellowLight.click(() => {
-        addColor($yellowLight, colorYellow);
-        // Switch off other colors
-        removeColor($redLight, colorRed);
-        removeColor($greenLight, colorGreen);
-    });
-
-    // Switch off manually by clicking on light
-    $greenLight.click(() => {
-        addColor($greenLight, colorGreen);
-        // Switch off other colors
-        removeColor($yellowLight, colorYellow);
-        removeColor($redLight, colorRed);
     });
 });
