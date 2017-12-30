@@ -58,14 +58,16 @@ $(() => {
         }
     }
 
+    // Combined version of timeout and interval
     const mainAsync = (funcArray, timeout, intervalRepeatTimes, timeoutDiff=0, intervalTime=0) => {
         // If interval time is not set then set it with this logic
         // This will make sure that interval won't end, until inner timeouts are done running
         if (intervalTime === 0) {
+            // One less than funcArray length because in the implementation of asyncFuncs() it starts with timeout
+            // Then starts to add timeoutDiff if any value is present.
             intervalTime = timeout + (funcArray.length - 1) * timeoutDiff;
         }
         const interval = setInterval(() => {
-            console.log("Hi");
             --intervalRepeatTimes;
             if (intervalRepeatTimes === 0)
                 clearInterval(interval);
@@ -74,74 +76,32 @@ $(() => {
     }
 
 
-    /* FUNCTION DEFINITION BEGIN */
 
-    const clickEvent = () => {
-        mainAsync([activateLights, deactivateLights], 400, 2, 400);
-        //setTimeout(() => {addColor($redLight, colorRed)}, 1800);
-        /*const trafficFlow = (() => {
+    // Set light timers
+    let timer;
 
-
-
-
-            setTimeout(() => {
-                timerRed = 10;
-
-                let lightCounter = setInterval(() => {
-                    timerRed--;
-                    $('#red-counter').empty().append(timerRed);
-                    if (timerRed == 1) {
-                        addColor($yellowLight, colorYellow);
-                    }
-
-                    if (timerRed == -1) {
-                        $('#green-counter').empty().append("Go!");
-                        removeColor($redLight, colorRed);
-                        addColor($greenLight, colorGreen);
-                        $('#red-counter').empty();
-                        clearInterval(lightCounter);
-
-                    }
-                }, 1000);
-            }, 2200);
-
-            // LOGIC FOR GREEN LIGHT
-            // Red light amount = 10 * 1000 + 2200 = 12200
-            setTimeout(() => {
-                timerGreen = 5;
-
-                let lightCounter = setInterval(() => {
-                    timerGreen--;
-                    $('#green-counter').empty().append(timerGreen);
-                    removeColor($yellowLight, colorYellow);
-                    if (timerGreen == 0) {
-                        $('#red-counter').empty().append("Stop!");
-                        addColor($redLight, colorRed);
-                    }
-                    if (timerGreen == -1) {
-                        removeColor($greenLight, colorGreen);
-                        addColor($redLight, colorRed);
-                        $('#green-counter').empty();
-                        clearInterval(lightCounter);
-                    }
-                // Call per second
-                }, 1000);
-            }, 13400);
-            //setTimeout(() => {addColor($greenLight, colorGreen)}, 18400);
-        })();*/
-
+    const light = (lightName, $targetSelector, targetColor) => {
+        timer = lightName === 'green' ? 5 : 10;
+        // Keep until implementation of greenOn
+        $targetSelector.empty();
+        addColor($targetSelector, targetColor);
+        const lightInterval = setInterval(() => {
+            --timer;
+            if (timer === 0)
+                clearInterval(lightInterval);
+            $targetSelector.empty().append(timer);
+        }, 1000);
     };
 
-    /* FUNCTION DEFINITION END */
+    const workingLights = () => {
+        light("red", $redLight, colorRed);
+    };
 
 
     // Once the button is clicked call clickEvent()
     $activateButton.click(() => {
-      clickEvent();
-      // Then clear div for new use
-      setTimeout(() => {
-        $('#red-counter').empty();
-        removeColor($redLight, colorRed);
-      }, 21000);
+        // Reset lights
+        mainAsync([activateLights, deactivateLights], 400, 3, 400);
+        setTimeout(workingLights, 3203);
     });
 });
