@@ -82,19 +82,18 @@ $(() => {
         let redTimer = 9;
         addColor($redLight, colorRed);
         let intervalTime = setInterval(() => {
-            if (redTimer === 9) {
-                $("#red-counter").append("Stop!");
-                --redTimer;
-            } else {
-                if (redTimer === 0) {
-                    $redLight.empty();
-                    removeColor($redLight, colorRed);
-                    clearInterval(intervalTime);
-                } else {
-                    $("#red-counter").empty().append(redTimer);
-                    --redTimer;
-                }
-            }
+
+        if (redTimer === 3) {
+            mainAsync([() => {removeColor($redLight, colorRed)},
+                () => {addColor($redLight, colorRed)}], 200, 3, 200);
+        }
+
+        if (redTimer === 0) {
+            $redLight.empty();
+            removeColor($redLight, colorRed);
+            clearInterval(intervalTime);
+        }
+        --redTimer;
         }, 1000);
     };
 
@@ -108,22 +107,20 @@ $(() => {
 
 
     const greenOn = () => {
-        let greenTimer = 5;
+        let greenTimer = 4;
         addColor($greenLight, colorGreen);
         let intervalTime = setInterval(() => {
-            if (greenTimer === 5) {
-                $("#green-counter").append("Go!");
-                --greenTimer;
-            } else {
-                if (greenTimer === 0) {
-                    $greenLight.empty();
-                    removeColor($greenLight, colorGreen);
-                    clearInterval(intervalTime);
-                } else {
-                    $("#green-counter").empty().append(greenTimer);
-                    --greenTimer;
-                }
-            }
+        if (greenTimer === 3) {
+            mainAsync([() => {removeColor($greenLight, colorGreen)},
+                () => {addColor($greenLight, colorGreen)}], 200, 3, 200);
+        }
+        if (greenTimer === 0) {
+            $greenLight.empty();
+            removeColor($greenLight, colorGreen);
+            clearInterval(intervalTime);
+        }
+        --greenTimer;
+
         }, 1000);
     };
 
