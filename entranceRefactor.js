@@ -73,35 +73,83 @@ $(() => {
                 clearInterval(interval);
             asyncFuncs(funcArray, timeout, timeoutDiff);
         }, intervalTime);
-    }
+    };
 
 
 
     // Set light timers
-    let timer;
+    const redOn = () => {
+        let redTimer = 9;
+        addColor($redLight, colorRed);
+        let intervalTime = setInterval(() => {
+            if (redTimer === 9) {
+                $("#red-counter").append("Stop!");
+                --redTimer;
+            } else {
+                if (redTimer === 0) {
+                    $redLight.empty();
+                    removeColor($redLight, colorRed);
+                    clearInterval(intervalTime);
+                } else {
+                    $("#red-counter").empty().append(redTimer);
+                    --redTimer;
+                }
+            }
+        }, 1000);
+    };
 
-    const light = (lightName, $targetSelector, targetColor) => {
-        timer = lightName === 'green' ? 5 : 10;
-        // Keep until implementation of greenOn
-        $targetSelector.empty();
-        addColor($targetSelector, targetColor);
-        const lightInterval = setInterval(() => {
-            --timer;
-            if (timer === 0)
-                clearInterval(lightInterval);
-            $targetSelector.empty().append(timer);
+    const yellowOn = () => {
+        addColor($yellowLight, colorYellow);
+        setTimeout(() => {
+            removeColor($yellowLight, colorYellow);
+        }, 2600);
+    };
+
+
+
+    const greenOn = () => {
+        let greenTimer = 5;
+        addColor($greenLight, colorGreen);
+        let intervalTime = setInterval(() => {
+            if (greenTimer === 5) {
+                $("#green-counter").append("Go!");
+                --greenTimer;
+            } else {
+                if (greenTimer === 0) {
+                    $greenLight.empty();
+                    removeColor($greenLight, colorGreen);
+                    clearInterval(intervalTime);
+                } else {
+                    $("#green-counter").empty().append(greenTimer);
+                    --greenTimer;
+                }
+            }
         }, 1000);
     };
 
     const workingLights = () => {
-        light("red", $redLight, colorRed);
+        // Deactivate lights after 100 times
+        let callTimes = 100;
+        let redDelay = 500;
+        let yellowDelay = 9100;
+        let greenDelay = 10500;
+        let overAllDelay = 0;
+        while (callTimes > 0) {
+            setTimeout(redOn, redDelay + overAllDelay);
+            setTimeout(yellowOn, yellowDelay + overAllDelay);
+            setTimeout(greenOn, greenDelay +overAllDelay);
+            overAllDelay += 15020;
+            callTimes--;
+        }
     };
 
 
     // Once the button is clicked call clickEvent()
     $activateButton.click(() => {
+        $activateButton.hide();
         // Reset lights
         mainAsync([activateLights, deactivateLights], 400, 3, 400);
-        setTimeout(workingLights, 3203);
+        setTimeout(workingLights, 3400);
+
     });
 });
