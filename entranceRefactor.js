@@ -134,7 +134,7 @@ $(() => {
         while (callTimes > 0) {
             setTimeout(redOn, redDelay + overAllDelay);
             setTimeout(yellowOn, yellowDelay + overAllDelay);
-            setTimeout(greenOn, greenDelay +overAllDelay);
+            setTimeout(greenOn, greenDelay + overAllDelay);
             overAllDelay += 15020;
             callTimes--;
         }
